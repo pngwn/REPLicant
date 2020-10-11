@@ -24,6 +24,18 @@
 	];
 
 	let current: number = 0;
+
+	const worker = new Worker("./worker.js");
+
+	worker.addEventListener("message", (event) => {
+		console.log(event.data);
+	});
+
+	function compile(_components: Component[]): void {
+		worker.postMessage(_components);
+	}
+
+	$: compile(components);
 </script>
 
 <main>
