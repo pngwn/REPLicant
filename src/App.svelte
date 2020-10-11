@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Input from "./Input.svelte";
+	import Output from "./Output.svelte";
 	import type { Component } from "./types";
 
 	let components: Component[] = [
@@ -20,4 +22,11 @@
 			source: "<h1>Hello</h1>",
 		},
 	];
+
+	let current: number = 0;
 </script>
+
+<main>
+	<Input bind:components bind:current />
+	<Output />
+</main>
