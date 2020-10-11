@@ -343,6 +343,7 @@ main {
 	margin: 0 auto;
 	height: 100%;
 	box-sizing: border-box;
+	display: flex;
 }
 
 section {
