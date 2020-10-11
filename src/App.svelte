@@ -27,8 +27,10 @@
 
 	const worker = new Worker("./worker.js");
 
+	let compiled;
+
 	worker.addEventListener("message", (event) => {
-		console.log(event.data);
+		compiled = event.data;
 	});
 
 	function compile(_components: Component[]): void {
@@ -40,5 +42,5 @@
 
 <main>
 	<Input bind:components bind:current />
-	<Output />
+	<Output {compiled} />
 </main>
