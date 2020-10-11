@@ -3,7 +3,7 @@
 
 	import { createEventDispatcher } from "svelte";
 
-	const dispatch = createEventDispatcher<{ select: number }>();
+	const dispatch = createEventDispatcher<{ select: number; new: undefined }>();
 
 	export let tabs: Tab[] = [];
 	export let current: number = 0;
@@ -15,6 +15,7 @@
 			{name}.{type}
 		</li>
 	{/each}
+	<li><button on:click={() => dispatch('new')}>+</button></li>
 </ul>
 
 <style>
