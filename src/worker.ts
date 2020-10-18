@@ -2,6 +2,7 @@ import type { Component } from "./types";
 
 import * as rollup from "rollup/dist/es/rollup.browser.js";
 
+// you could use unpkg like the official repl, i thought i'd try out jsdelivr
 const CDN_URL = "https://cdn.jsdelivr.net/npm";
 importScripts(`${CDN_URL}/svelte/compiler.js`);
 
@@ -28,6 +29,8 @@ self.addEventListener(
 				{
 					name: "repl-plugin",
 					async resolveId(importee: string, importer: string) {
+						// handle imports from 'svelte'
+
 						// import x from 'svelte'
 						if (importee === "svelte") return `${CDN_URL}/svelte/index.mjs`;
 
@@ -36,14 +39,14 @@ self.addEventListener(
 							return `${CDN_URL}/svelte/${importee.slice(7)}/index.mjs`;
 						}
 
-						// import x from './file.js'
+						// import x from './file.js' (via a 'svelte' or 'svelte/x' package)
 						if (importer && importer.startsWith(`${CDN_URL}/svelte`)) {
 							const resolved = new URL(importee, importer).href;
 							if (resolved.endsWith(".mjs")) return resolved;
 							return `${resolved}/index.mjs`;
 						}
 
-						// repl components
+						// local repl components
 						if (component_lookup.has(importee)) return importee;
 
 						// relative imports from a remote package
@@ -68,12 +71,16 @@ self.addEventListener(
 						return importee;
 					},
 					async load(id: string) {
+						// local repl components are stored in memory
+						// this is our virtual filesystem
 						if (component_lookup.has(id))
 							return component_lookup.get(id).source;
 
+						// everything else comes from a cdn
 						return await fetch_package(id);
 					},
 					transform(code: string, id: string) {
+						// our only transform is to compile svelte components
 						//@ts-ignore
 						if (/.*\.svelte/.test(id)) return svelte.compile(code).js.code;
 					},
@@ -81,6 +88,8 @@ self.addEventListener(
 			],
 		});
 
+		// a touch longwinded but output contains an array of chunks
+		// we are not code-splitting, so we only have a single chunk
 		const output: string = (await bundle.generate({ format: "esm" })).output[0]
 			.code;
 
