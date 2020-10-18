@@ -17,6 +17,8 @@ This is the source code for a talk I gave at Svelte Summit 2020. This is actual 
   - [Iframe setup](#iframe-setup)
   - [Evaluate and render](#evaluate-and-render)
   - [NPM module imports](#npm-module-imports)
+- [What next?](#what-next)
+- [Further reading](#further-reading)
 
 ## Differences from the talk
 
@@ -131,3 +133,34 @@ This also works for Svelte-specific packages that are using the `svelte` field t
 
 [Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/adc1028989503ace1cac410df2b5cfbc4b46f488)\
 [View the diff](https://github.com/pngwn/REPLicant/commit/adc1028989503ace1cac410df2b5cfbc4b46f488)
+
+## What next?
+
+This is just the start, from here you can go on to add whatever features you like.
+
+Maybe you want allow importing different file types, that would just require a new transform that convert that format into JavaScript, just like we did with `.svelte` files.
+
+Perhaps you'd like to add additional UI features. Draggable tabs, more user feedback. Syntax highlighting and code completion could be added by using a dedicated code editor such as [monaco-editor](https://microsoft.github.io/monaco-editor/) or [codemirror](https://codemirror.net/)(which is used by the official Svelte REPL).
+
+Maybe you want to improve the performance of the data-loading and compilation by adding some caching for those behaviours inside the web worker.
+
+The list is endless, check the [repl on the Svelte site](https://svelte.dev/repl/) for inspiration but don't let that limit you!
+
+## Further reading
+
+- To understand the Svelte API itself - [tutorial](https://svelte.dev/tutorial/) - [docs](https://svelte.dev/docs/)
+- [Svelte REPL](https://svelte.dev/repl/)
+- [mdsvex Playground](https://mdsvex.com/playground)
+- [Try Ruby](https://try.ruby-lang.org/)
+- [Tour of Go](https://tour.golang.org/welcome/1)
+- [Rust Playground](https://play.rust-lang.org/)
+- [TypesScript Playground](https://www.typescriptlang.org/play)
+- [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+- [Blobs](https://developer.mozilla.org/en-US/docs/Web/API/Blob)
+- [Blob URLS](https://javascript.info/blob)
+- [Embedding content and iFrames](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Other_embedding_technologies)
+- [Communicating with iFrames](https://javascript.info/cross-window-communication)
+
+## Questions
+
+If you have questions or feedback then feel to file an issue here, bug me on twitter ([@evilpingwin](https://twitter.com/evilpingwin)), or you can grab me on discord (@pngwn).
