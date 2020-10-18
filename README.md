@@ -1,105 +1,133 @@
-*Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+# REPLicant - Svelte Summit 2020
 
----
+This is the source code for a talk I gave at Svelte Summit 2020. This is actual code I wrote during the talk with a few later additions to clean things up. I will add a link to the video when it is published.
 
-# svelte app
+## Table of Contents
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+- [Differences from the talk](#differences-from-the-talk)
+- [Usage](#usage)
+- [Commits](#commits)
+  - [Initial setup and config](#initial-setup-and-config)
+  - [REPL code editor](#repl-code-editor)
+  - [Tabbed interface](#tabbed-interface)
+  - [New component creation](#new-component-creation)
+  - [Web Worker setup](#web-worker-setup)
+  - [Svelte package imports](#svelte-package-imports)
+  - [Local package imports](#local-package-imports)
+  - [Iframe setup](#iframe-setup)
+  - [Evaluate and render](#evaluate-and-render)
+  - [NPM module imports](#npm-module-imports)
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+## Differences from the talk
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+The only thing this app does that the version in the talk doesn't is resolve npm module imports to a CDN. So `import x from 'randommodule'` works in this app too. You can read more details about this [here](#npm-module-imports).
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+## Usage
 
+_Note: I use `pnpm` but this will probably work fine with `yarn` or `npm` depsite the lockfile warnings._
 
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
-```
-
-...then start [Rollup](https://rollupjs.org):
-
-```bash
-npm run dev
-```
-
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
-
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
+Clone and install
 
 ```bash
-npm run build
+git clone https://github.com/pngwn/REPLicant.git && cd REPLicant
+
+pnpm i # or yarn or npm i
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
-
-
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+Run the dev server and play around:
 
 ```bash
-node scripts/setupTypeScript.js
+pnpm dev
 ```
 
-Or remove the script via:
+## Commits
 
-```bash
-rm scripts/setupTypeScript.js
-```
+### initial setup and config
 
-## Deploying to the web
+This commit setups the basics. It is the [svelte-template]() after running the `setupTypescript` script with a few extra config files (`.prettierrc.yaml` and `.gitignore`).
 
-### With [Vercel](https://vercel.com)
+We also add some basic typescript interfaces and data structures for the REPL.
 
-Install `vercel` if you haven't already:
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/534b9fe0527fc14c58a7551a9a8196c4468a1040)\
+[View the commit](https://github.com/pngwn/REPLicant/commit/534b9fe0527fc14c58a7551a9a8196c4468a1040)
 
-```bash
-npm install -g vercel
-```
+### repl code editor
 
-Then, from within your project folder:
+This commit adds an input, which is our rudimentary code editor and keeps the contents of the input in sync with the component state we setup earlier.
 
-```bash
-cd public
-vercel deploy --name my-project
-```
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/a26696c2ce634979d9481fa36b44d1529d7f6890)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/a26696c2ce634979d9481fa36b44d1529d7f6890)
 
-### With [surge](https://surge.sh/)
+### tabbed interface
 
-Install `surge` if you haven't already:
+This commit adds a tabbed UI allowing us to switch between the different components, marking them as active. The 'active' component is the component we are currently editing in the REPL.
 
-```bash
-npm install -g surge
-```
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/f87252385b84b84daa7534353c04d8665dd32b60)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/f87252385b84b84daa7534353c04d8665dd32b60)
 
-Then, from within your project folder:
+### new component creation
 
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+This commit adds a button allowing the creation of a new component in the REPL as well as accompanying logic. This only supports the creation of svelte components (`.svelte` files) and the name is automatically generated.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/fd783d86fefdf85847b2805d57887c569fa677ac)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/fd783d86fefdf85847b2805d57887c569fa677ac)
+
+### web worker setup
+
+This commit sets up the basic web worker boilerplate as well as some simple messaging to make sure things are working as expected.
+
+It also adds another entrypoint in the rollup config, to bundle the worker file seperately.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/abd59742d41d68618d9b61945711429ae70b7515)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/abd59742d41d68618d9b61945711429ae70b7515)
+
+### Svelte package imports
+
+This commit setups the rollup basics that we need and resolves svelte imports to the CDN we are using (jsdelivr) as we have no file system. It resolve the follwing cases:
+
+- plain 'svelte' imports: `import { onMount } from 'svelte';`
+- svelte 'sub imports': `import { writable } from 'svelte/writable';`
+- relative imports from a svelte package: `import x from './file.js';` where the importing module is module is a svelte module that we handled above.
+
+In addition to resolving the paths, it also fetches the source code from the cdn and passes it to the bundler.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/1899a92812683bd12f3063ee51dae7f9f2795e15)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/1899a92812683bd12f3063ee51dae7f9f2795e15)
+
+### Local package imports
+
+This commit resolves local REPL imports that don't exist anywhere except in memory. These are the components that the user is creating live in the browser.
+
+It also compiles svelte components to valid javascript and returns that to the bundler.
+
+And finally it passes this final bundle back to the main thread.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/28f54dbd8af541374427b61d643b1729b88a4dad)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/28f54dbd8af541374427b61d643b1729b88a4dad)
+
+### Iframe setup
+
+This commit sets up the basic ifram boilerplate, giving it a valid `srcdoc`, listening for any posted messages inside. In the parent component (outside of the iframe) we pass a simple message down to check everything is working.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/e0362b500ee191c68aec9b9a0fa1c7f5fc3b8465)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/e0362b500ee191c68aec9b9a0fa1c7f5fc3b8465)
+
+### Evaluate and render
+
+This commit evaluates the bundle in the iframe via a dynamic import using blob urls and then renders the component to the page.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/9709717a52577d050a7eec5a53ba6c6ddbaf5196)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/9709717a52577d050a7eec5a53ba6c6ddbaf5196)
+
+### NPM module imports
+
+_This did not appear in the talk_
+
+This is similar to the earlier resolution steps. This commit resolves npm module imports to the CDN. It does this by fetching the `package.json` and reading it to work out where teh entry point is. This enables `import x from 'any-random-package';`.
+
+Unlike with the svelte packages, where we can easily workout what the structure looks like, the entrypoint for a given npm module can vary significantly. We just get the `package.json` to remove any ambiguity.
+
+This also works for Svelte-specific packages that are using the `svelte` field to point to uncompile `.svelte` files.
+
+[Browse the repo at this point](https://github.com/pngwn/REPLicant/tree/adc1028989503ace1cac410df2b5cfbc4b46f488)\
+[View the diff](https://github.com/pngwn/REPLicant/commit/adc1028989503ace1cac410df2b5cfbc4b46f488)
