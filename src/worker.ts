@@ -27,13 +27,15 @@ self.addEventListener(
 			plugins: [
 				{
 					name: "repl-plugin",
-					resolveId(importee: string, importer: string) {
+					async resolveId(importee: string, importer: string) {
 						// import x from 'svelte'
 						if (importee === "svelte") return `${CDN_URL}/svelte/index.mjs`;
+
 						// import x from 'svelte/somewhere'
 						if (importee.startsWith("svelte/")) {
 							return `${CDN_URL}/svelte/${importee.slice(7)}/index.mjs`;
 						}
+
 						// import x from './file.js'
 						if (importer && importer.startsWith(`${CDN_URL}/svelte`)) {
 							const resolved = new URL(importee, importer).href;
@@ -43,6 +45,27 @@ self.addEventListener(
 
 						// repl components
 						if (component_lookup.has(importee)) return importee;
+
+						// relative imports from a remote package
+						if (importee.startsWith("."))
+							return new URL(importee, importer).href;
+
+						// bare named module imports (importing an npm package)
+
+						// get the package.json and load it into memory
+						const pkg_url = `${CDN_URL}/${importee}/package.json`;
+						const pkg = JSON.parse(await fetch_package(pkg_url));
+
+						// get an entry point from the pkg.json - first try svelte, then modules, then main
+						if (pkg.svelte || pkg.module || pkg.main) {
+							// use the aobove url minus `/package.json` to resolve the URL
+							const url = pkg_url.replace(/\/package\.json$/, "");
+							return new URL(pkg.svelte || pkg.module || pkg.main, `${url}/`)
+								.href;
+						}
+
+						// we probably missed stuff, pass it along as is
+						return importee;
 					},
 					async load(id: string) {
 						if (component_lookup.has(id))
