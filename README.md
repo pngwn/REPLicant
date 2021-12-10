@@ -1,6 +1,6 @@
 # REPLicant - Svelte Summit 2020
 
-This is the source code for a talk I gave at Svelte Summit 2020. This is actual code I wrote during the talk with a few later additions to clean things up. I will add a link to the video when it is published.
+This is the source code for a [talk I gave at Svelte Summit 2020](https://www.youtube.com/watch?v=S3j1fLzC8_E). This is actual code I wrote during the talk with a few later additions to clean things up. I will add a link to the video when it is published.
 
 ## Table of Contents
 
